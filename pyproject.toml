@@ -1,0 +1,9 @@
+[tool.pytest.ini_options]
+pythonpath = "."
+
+[tool.basedpyright]
+typeCheckingMode = "standard"
+ignore = ["tests"]
+
+[tool.ruff]
+exclude = ["tests"]
