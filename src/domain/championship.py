@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from random import Random
 
 from src.match import Match
+from src.standing import Standing
 from src.team import Team
 
 
@@ -109,3 +110,8 @@ class Championship:
         calendar = dict(sorted(calendar.items()))
 
         return calendar
+
+
+    @property
+    def standing(self):
+        return Standing.from_teams(self.teams)
