@@ -37,7 +37,7 @@ def main():
     csv_path = project_root / 'data' / 'teams.csv'
     teams = load_teams(str(csv_path))
     seriea = Championship(teams=teams)
-    calendar = seriea.schedule(seed=None)
+    calendar = seriea.schedule(seed=99)
     display_calendar(calendar)
 
 

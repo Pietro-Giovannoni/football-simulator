@@ -53,3 +53,21 @@ def test_championship_add_team_exceeding_capacity(juventus: Team, milan: Team):
     seriea = Championship(teams=[juventus], capacity=1)
     with pytest.raises(ValueError):
         seriea.add_team(milan)
+
+
+def test_championship_schedule(juventus, milan):
+    seriea = Championship(teams=[juventus, milan])
+    calendar = seriea.schedule(seed=37)
+
+    assert len(calendar) == 2
+
+
+def test_championship_schedule_wrong_seed(juventus, milan):
+    seriea = Championship(teams=[juventus, milan])
+    with pytest.raises(TypeError):
+        seriea.schedule(seed='abc')
+
+def test_championship_schedule_few_teams(juventus):
+    seriea = Championship(teams=[juventus])
+    with pytest.raises(ValueError):
+        seriea.schedule(seed=4)

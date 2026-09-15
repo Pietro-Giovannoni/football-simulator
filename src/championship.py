@@ -33,6 +33,7 @@ class Championship:
 
 
     def add_team(self, team: Team) -> None:
+        '''Adds a team to the current championship.'''
 
         if not isinstance(team, Team):
             raise TypeError(f'Expected team as Team, got {type(self.teams).__name__} instead.')
@@ -47,14 +48,7 @@ class Championship:
 
 
 
-
-
-
-
-
-
-
-    def schedule(self, seed: int|None = None):
+    def schedule(self, seed: int|None = None) -> dict[int, list[Match]]:
         """
         Sorts a round-robin calendar for this championship.
 
