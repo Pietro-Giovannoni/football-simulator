@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
+from random import Random
 
+from src.match import Match
 from src.team import Team
 
 
@@ -42,3 +44,74 @@ class Championship:
             raise ValueError('This championship is already full.')
 
         self.teams.append(team)
+
+
+
+
+
+
+
+
+
+
+    def schedule(self, seed: int|None = None):
+        """
+        Sorts a round-robin calendar for this championship.
+
+        Args:
+            seed (int|None): optional seed used to shuffle the calendar matchdays.
+
+        Returns:
+            calendar (dict[int, list[Match]]): a dictionary of numbered matchdays.
+        """
+
+        if not isinstance(seed, int) and seed is not None:
+            raise TypeError(f"Expected seed as int or None, got {type(seed).__name__} instead.")
+
+        n = len(self.teams)
+        if n < 2:
+            raise ValueError("Cannot schedule a calendar with less than two teams.")
+
+        teams = self.teams.copy()
+        slots = n if n%2==0 else n+1
+        rounds = slots-1
+        half = slots//2
+        positions = list(range(slots))
+        Random(seed).shuffle(positions)
+        calendar: dict[int, list[Match]] = {}
+
+        for round_number in range(rounds):     # for each matchday
+            first_leg: list[Match] = []
+            second_leg: list[Match] = []
+
+            for i in range(half):   # games in a single matchday
+                left_index = positions[i]
+                right_index = positions[slots-1-i]
+
+                if left_index >= n or right_index >= n:
+                    continue        # skip this game (resting team)
+
+                if i==0 and round_number % 2 == 0: # to prevent some team to always play home or away
+                    home = teams[left_index]
+                    away = teams[right_index]
+                else:
+                    away = teams[left_index]
+                    home = teams[right_index]
+
+                first_leg.append(Match(home=home, away=away))
+                second_leg.append(Match(home=away, away=home))
+
+            Random().shuffle(first_leg)
+            Random().shuffle(second_leg)
+            calendar[round_number+1] = first_leg
+            calendar[round_number+20] = second_leg
+
+            # rotation
+            fixed = [positions[0]]
+            rest = positions[1:]
+            rest = [rest[-1]] + rest[:-1]
+            positions = fixed + rest
+
+        calendar = dict(sorted(calendar.items()))
+
+        return calendar
