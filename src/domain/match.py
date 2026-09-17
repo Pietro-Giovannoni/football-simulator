@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.team import Team
+from src.domain.team import Team
 
 
 @dataclass
