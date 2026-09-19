@@ -1,4 +1,4 @@
-from src.team import Team
+from src.domain.team import Team
 import pytest
 
 def test_team():

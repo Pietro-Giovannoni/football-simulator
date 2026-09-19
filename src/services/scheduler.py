@@ -8,7 +8,17 @@ def round_robin_builder(teams: tuple[Team, ...], rng: Random) -> tuple[tuple[Mat
     '''
     Builds a double round-robin from a collection of teams, also shuffling matches.
     An optional seed can be provided for reproducibility.
+
+    Returns:
+        a tuple of matchdays, which are tuples of Match onjects
     '''
+    teams = tuple(teams)
+    if not all(isinstance(t, Team) for t in teams):
+        raise TypeError('All elements in teams must be Team objects.')
+
+    if not isinstance(rng, Random):
+        raise TypeError(f'Expected rng as Random, got {type(rng).__name__} instead.')
+
     rotation: list[Team | None] = list(teams)
     if len(rotation) % 2 == 1:
         rotation.append(None)   # resting turn for odd number of teams

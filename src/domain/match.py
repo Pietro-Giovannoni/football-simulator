@@ -29,15 +29,17 @@ class Match:
                     raise ValueError('Cannot have negative scores.')
 
 
+
     @property
     def winner(self) -> Team | None:
         '''Returns the winning team or None, in case of a tie.'''
 
-        if self.home_score is not None and self.away_score is not None:
+        if self.played:
             if self.home_score > self.away_score:
                 return self.home
             if self.home_score < self.away_score:
                 return self.away
+            return None
         return None
 
 
@@ -48,6 +50,11 @@ class Match:
         if self.home_score is not None and self.away_score is not None:
             return (self.home_score, self.away_score)
         return None
+
+    @property
+    def played(self):
+        '''Checks whether the math has been played.'''
+        return self.score is not None
 
 
     def update_score(self, home_score: int|None = None, away_score: int|None = None):

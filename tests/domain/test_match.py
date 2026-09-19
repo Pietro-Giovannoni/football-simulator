@@ -1,6 +1,7 @@
 import pytest
 
-from src.match import Match
+from src.domain.match import Match
+from src.domain.team import Team
 
 def test_match(juventus, milan):
 

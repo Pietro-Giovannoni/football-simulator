@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class Team:
     '''
     A class representing a team, along with its attributes.
@@ -18,7 +18,7 @@ class Team:
 
         if not isinstance(self.code, str):
             if self.code is None:
-                self.code = self.name[:3].upper()
+                object.__setattr__(self, 'code', self.name[:3].upper())
             else:
                 raise TypeError(f'Expected code as str, got {type(self.code).__name__} instead.')
 

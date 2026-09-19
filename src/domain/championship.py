@@ -4,6 +4,7 @@ from random import Random
 from types import MappingProxyType
 
 from src.domain.match import Match
+from src.domain.standing import Standing
 from src.domain.team import Team
 from src.services.scheduler import round_robin_builder
 
@@ -15,6 +16,7 @@ class Championship:
     """
     teams: tuple[Team, ...]
     _calendar: dict[int, tuple[Match, ...]] | None = field(default=None, init=False, repr=False)
+
 
     def __post_init__(self):
 
@@ -35,11 +37,10 @@ class Championship:
         '''
         Creates a random calendar for this championship.
         '''
-
         if self._calendar is not None:
             raise ValueError('Championship already started.')
 
-        if seed is not None and isinstance(seed, bool) or not isinstance(seed, int):
+        if seed is not None and (isinstance(seed, bool) or not isinstance(seed, int)):
             raise TypeError(f'Expected seed as int or None, got {type(seed).__name__} instead.')
 
         matchdays = round_robin_builder(self.teams, Random(seed))
@@ -59,3 +60,20 @@ class Championship:
             raise RuntimeError('Call start() before accessing the calendar.')
 
         return MappingProxyType(self._calendar)
+
+
+    @property
+    def standing(self):
+        '''
+        Returns the championship (read-only) standing.
+        '''
+        if self._calendar is None:
+            raise RuntimeError('Call start() before accessing the calendar.')
+
+        matches = [
+            match
+            for matchday in self._calendar.values()
+            for match in matchday
+            if match.played
+        ]
+        return Standing.build(teams=self.teams, matches=matches)

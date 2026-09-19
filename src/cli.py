@@ -1,3 +1,4 @@
+from collections.abc import Mapping
 from pathlib import Path
 
 from rich.console import Console
@@ -8,7 +9,7 @@ from src.domain.match import Match
 from src.services.data_loader import load_teams
 
 
-def display_calendar(calendar: dict[int, list[Match]]):
+def display_calendar(calendar: Mapping[int, tuple[Match,...]]):
     '''
     displays the calendar through a rich table.
     '''
@@ -30,7 +31,7 @@ def display_calendar(calendar: dict[int, list[Match]]):
                 str(matchday_number),
                 matches,
                 results,
-                end_section=(True, matchday_number==len(calendar))
+                end_section=(matchday_number==len(calendar))
             )
 
     Console().print(table)
@@ -38,11 +39,11 @@ def display_calendar(calendar: dict[int, list[Match]]):
 
 def main():
     project_root = Path(__file__).resolve().parents[1]
-    csv_path = project_root / 'data' / 'teams.csv'
+    csv_path = project_root / 'src' / 'repos' / 'teams.csv'
     teams = load_teams(str(csv_path))
-    seriea = Championship(teams=teams)
-    calendar = seriea.schedule(seed=99)
-    display_calendar(calendar)
+    seriea = Championship(teams=tuple(teams))
+    seriea.start(seed=99)
+    display_calendar(seriea.calendar)
 
 
 if __name__ == '__main__':
